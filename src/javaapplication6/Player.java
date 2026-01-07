@@ -3,43 +3,34 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package javaapplication6;
-import java.awt.Point;
-import java.util.List;
-import java.util.ArrayList;
-/**
- *
- * @author aiden f
- */
-public class Player {
-
-    private Point position;
-    private int hp;
-    private int attack;
-    private List<Item> inventory;
-    private List<Skill> skills;
-
-    public Player(Point startPosition) {
-        this.position = startPosition;
-        this.hp = 100;
-        this.attack = 10;
-        this.inventory = new ArrayList<>();
-        this.skills = new ArrayList<>();
+import processing.core.PApplet;
+public class Player extends Actor{
+    private boolean up;
+    private boolean down;
+    private boolean left;
+    private boolean right;
+    private int speed = 3;
+     public Player(PApplet app, int x, int y) {
+        super(app, 120, 15, 5, x, y); 
     }
-
-    public void move(String direction) {
-        // movement logic to be implemented
-    }
-
-    public void attack(Enemy target) {
-        // combat logic to be implemented
-    }
-
-    public void useItem(Item item) {
-        // item usage logic to be implemented
-    }
-
-    public void useSkill(Skill skill, GameObject target) {
-        // skill logic to be implemented
-    }
+     public void setInput(boolean up,boolean down,boolean left,boolean right){
+         this.up = up;
+         this.down = down;
+         this.left = left;
+         this.right = right;
+     }
+     public void update(){
+         int nx = 0;
+         int ny = 0;
+         if(up) ny -= speed;
+         if(down) ny += speed;
+         if(left) nx -= speed;
+         if(right) nx += speed;
+         x+=nx;
+         y+=ny;//边缘修正没写if写
+     }
+     public void draw(){
+         app.image(sprite, x, y, w, h);//改成用人物组
+     }
+     
 }
-
