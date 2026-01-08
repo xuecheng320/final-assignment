@@ -15,14 +15,17 @@ import processing.core.PImage;
  */
 public class MySketch extends PApplet{
     private Player player;
+    private SpriteSet sprites;
     private boolean up,down,left,right;
     public void settings(){
-        size(800,600);
+        size(1500,1200);
         }
     public void setup(){
     frameRate(60);
     imageMode(CORNER);
-    player = new Player(this,200,200);
+    sprites = new SpriteSet();
+    sprites.load(this, 40, 48);
+    player = new Player(this,200,200,sprites);
     }
     public void draw(){
         background(0);
