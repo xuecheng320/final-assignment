@@ -15,17 +15,23 @@ import processing.core.PImage;
  */
 public class MySketch extends PApplet{
     private Player player;
-    private SpriteSet sprites;
+    private NPC npc1;
+    private SpriteSet spritesPlayer;
+    private SpriteSet spritesNpc1;
     private boolean up,down,left,right;
+    String text [] = {"hello"};
     public void settings(){
         size(1500,1200);
         }
     public void setup(){
     frameRate(60);
     imageMode(CORNER);
-    sprites = new SpriteSet();
-    sprites.load(this, 40, 48);
-    player = new Player(this,200,200,sprites);
+    spritesPlayer = new SpriteSet();
+//    spritesNpc1 = new SpriteSet();
+//    spritesNpc1.load(this, 40, 48,null,null);//走路，站立，攻击
+    spritesPlayer.load(this, 40, 48,"images/Character_Walk.png","images/Character_Idle.png");
+    player = new Player(this,200,200,spritesPlayer);
+    npc1 = new NPC(this,300,300,spritesNpc1,text);
     }
     public void draw(){
         background(0);
@@ -39,7 +45,12 @@ public class MySketch extends PApplet{
         if (key == 's' || key == 'S') down = true;
         if (key == 'a' || key == 'A') left = true;
         if (key == 'd' || key == 'D') right = true;
+        if(key == 'e' || key == 'E'){
+            if(player.intersects(npc1))
+                if(npc1.isTalking())npc1.startTalking();
+                else npc1.nextTalk();
     }
+     }
 
     @Override
     public void keyReleased() {
@@ -48,5 +59,6 @@ public class MySketch extends PApplet{
         if (key == 'a' || key == 'A') left = false;
         if (key == 'd' || key == 'D') right = false;
     }
+    
 
 }

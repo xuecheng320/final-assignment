@@ -35,17 +35,26 @@ public class SpriteSet {
     private int CELL_H;
     private int CELL_W;
     
+    //每个实体传入自己的文件路径
+    private String walkFrameSet;
+    private String standFrameSet;
+    private String attackFrameSet;
+    
     private PApplet app;
     PImage walk [][];
     PImage stand [][];
-    public void load(PApplet app,int CELL_W,int CELL_H){
+    PImage attack [][];
+    
+    public void load(PApplet app,int CELL_W,int CELL_H,String walkFrameSet,String standFrameSet){
        this.CELL_H = CELL_H;
        this.CELL_W= CELL_W;
-       
+       this.walkFrameSet = walkFrameSet;
+       this.standFrameSet = standFrameSet;
        //获取站立图
-       walk = cutSheet(app,"images/Character_Walk.png",walkFrames);
+       walk = cutSheet(app,walkFrameSet,walkFrames);
        //获取站立图
-       stand = cutSheet(app,"images/Character_Idle.png",standFrames);
+       stand = cutSheet(app,standFrameSet,standFrames);
+       //获取攻击图
     }
     private PImage[][] cutSheet(PApplet app,String file,int framesPerDir){
         PImage sheet =app.loadImage(file);
