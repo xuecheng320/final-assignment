@@ -31,7 +31,7 @@ public abstract class Actor {
     protected int frameIndex =0;//指针
     protected int frameCounter = 0;//计数器
     protected int frameDelay = 6;//每帧延迟
-    
+    //传画图，血量，攻击，防守，x坐标，y坐标，走路图，战力图
     public Actor(PApplet app, int hp, int attack, int defense, int x, int y,PImage walk [][],PImage stand [][]) {
         this.app = app;
         this.hp = hp;
