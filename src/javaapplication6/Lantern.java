@@ -23,6 +23,9 @@ public class Lantern extends Actor{
         if(hp <= 0){live =false;}
         return live;
     }
+    public int gethp(){
+        return hp;
+    }
     public void update(){};
     
     

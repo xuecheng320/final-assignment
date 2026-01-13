@@ -3,44 +3,34 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package javaapplication6;
-import java.awt.Point;
+import processing.core.PApplet;
+import processing.core.PImage;
 
 /**
  *
  * @author aiden f
  */
 
-public class Enemy {
-
-    // 属性
-    protected int hp;
-    protected int attack;
-    protected int defense;
-    protected Point position;
-
-    // 构造函数
-    public Enemy(int hp, int attack, int defense, Point startPosition) {
-        this.hp = hp;
-        this.attack = attack;
-        this.defense = defense;
-        this.position = startPosition;
+public class Enemy extends Actor{
+    //传画图，血量，攻击，防守，x坐标，y坐标，走路图，战力图
+    public Enemy(PApplet app, int hp, int attack, int x, int y,SpriteSet sprites) {
+        super(app,hp,attack,0,x,y,sprites.walk,sprites.stand);
     }
-
-    // ===== 方法 =====
-
     public void move() {
-        // 移动逻辑待实现
+        if( y + h/2  == app.height / 2 && x == 0) x +=5;
+        if( y + h/2 == app.height / 2 && x == app.width) x -= 5;
+        if( x + w/2 == app.width / 2 && y == 0) y += 5;
+        if( x + w/2 == app.width / 2 && x == app.height) x -= 5;
+        
     }
 
     public void attack(Player target) {
         // 攻击玩家逻辑待实现
     }
 
-    public void useSpecial(Player target) {
-        // 特殊技能逻辑待实现
-    }
-
-    // ===== Getter / Setter （可选，加分） =====
+    public void boolean isArrive(){
+        return (x == app.width/2 && y == app.height/2);
+        }
 
     public int getHp() {
         return hp;
@@ -49,12 +39,6 @@ public class Enemy {
     public void setHp(int hp) {
         this.hp = hp;
     }
+    public void update(){}
 
-    public Point getPosition() {
-        return position;
-    }
-
-    public void setPosition(Point position) {
-        this.position = position;
-    }
 }
