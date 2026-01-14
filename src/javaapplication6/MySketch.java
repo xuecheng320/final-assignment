@@ -25,11 +25,11 @@ public class MySketch extends PApplet{
     frameRate(60);
     imageMode(CORNER);
     spritesPlayer = new SpriteSet();
-    spritesEnemy = new SpriteSet();
+//    spritesEnemy = new SpriteSet();
     spritesPlayer.load(this, 40, 48,"images/Character_Walk.png","images/Character_Idle.png");
     spritesEnemy.load(this, 40, 48,"images/Character_Walk.png","images/Character_Idle.png");
     player = new Player(this,200,200,spritesPlayer);
-    enemy = new Enemy(this, 100, 5, width, height, spritesEnemy);
+//    enemy = new Enemy(this, 100, 5, width, height, spritesEnemy);
     
     }
     public void draw(){
@@ -45,9 +45,7 @@ public class MySketch extends PApplet{
         if (key == 'a' || key == 'A') left = true;
         if (key == 'd' || key == 'D') right = true;
         if(key == 'e' || key == 'E'){
-//            if(player.intersects(npc1))
-//                if(npc1.isTalking())npc1.startTalking();
-//                else npc1.nextTalk();
+
     }
      }
 

@@ -28,9 +28,9 @@ public class Enemy extends Actor{
         // 攻击玩家逻辑待实现
     }
 
-    public void boolean isArrive(){
-        return (x == app.width/2 && y == app.height/2);
-        }
+//    public boolean isArrive(){
+//        return (x == app.width/2 && y == app.height/2);
+//        }
 
     public int getHp() {
         return hp;

@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package javaapplication6;
+import java.io.File;
 import processing.core.PApplet;
 import processing.core.PImage;
 /**
@@ -11,6 +12,7 @@ import processing.core.PImage;
  */
 public class Lantern extends Actor{
     private boolean live =true;
+    private int maxhp = 250;
 
     public Lantern(PApplet app, int x, int y,SpriteSet sprites){
         super(app, 220, 0, 0, x, y,sprites.walk,sprites.stand); //传画图，血量，攻击，防守，x坐标，y坐标，走路图，战力图
@@ -20,7 +22,7 @@ public class Lantern extends Actor{
         hp-= d;
     }
     public boolean islive(){
-        if(hp <= 0){live =false;}
+        if(hp <= 0){live =false;hp=0;}
         return live;
     }
     public int gethp(){
@@ -28,5 +30,19 @@ public class Lantern extends Actor{
     }
     public void update(){};
     
+    public void draw(){
+        rectMode(CENTER);
+        File file = new File("images/lanter.png");
+        if(file.exists()){
+        PImage img = app.loadImage("images/lantern.png");
+        app.image(img, x, x, x, x);
+    }
+        int ratio = (hp == 0)? 0 : (int)hp/maxhp;
+        app.noStroke();
+        app.fill(0,160,0);
+        app.rect(x,y,y - 10,w);
+        app.fill(0,255,0);
+        app.rect(x,y,y - 10, w * ratio);
+    }
     
 }
