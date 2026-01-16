@@ -31,18 +31,17 @@ public class Lantern extends Actor{
     public void update(){};
     
     public void draw(){
-        rectMode(CENTER);
-        File file = new File("images/lanter.png");
-        if(file.exists()){
-        PImage img = app.loadImage("images/lantern.png");
-        app.image(img, x, x, x, x);
+        File file = new File("images/lanter.png");//查看是否有文件路径
+        if(file.exists()){//如果文件存在的话
+        PImage img = app.loadImage("images/lantern.png");//加载图片
+        app.image(img, x, y, app.width, app.height);
     }
         int ratio = (hp == 0)? 0 : (int)hp/maxhp;
         app.noStroke();
         app.fill(0,160,0);
-        app.rect(x,y,y - 10,w);
+        app.rect(x,y,w,y - 10);
         app.fill(0,255,0);
-        app.rect(x,y,y - 10, w * ratio);
+        app.rect(x,y, w * ratio, y - 10);
     }
     
 }
