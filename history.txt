@@ -1,0 +1,3 @@
+time=2026-01-19 00:06
+seconds=22
+win=false

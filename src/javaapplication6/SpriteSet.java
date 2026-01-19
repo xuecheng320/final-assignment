@@ -6,78 +6,99 @@ package javaapplication6;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-/**
- *
- * @author aiden f
- * SpriteSet 是角色动画的“图片仓库”。
- * 这里集中加载所有角色走路用的图片（上下左右），
- * 图片只在这里 load 一次，避免每个 Player / NPC / Enemy 都重复加载。
- *
- * PImage walk 是一个二维数组：walk[方向][帧]，
- * 比如 walk[DOWN][2] 表示“向下走的第 3 帧”。
- *
- * 使用时，角色类只需要根据当前方向 dir 和动画帧 frameIndex，
- * 在 draw() 里直接画：
- * app.image(SpriteSet.walk[dir][frameIndex], x, y, w, h);
- *
- * 记住：这里只管图片，不管人物怎么动、不管输入、不管 AI。
- * 这个类只在 MySketch.setup() 里调用一次 load()。
- */
-
+// Sprite frame collection
+// Used to cut sprite sheet into four direction animation arrays
 public class SpriteSet {
-    
-    //每个方向的帧数
-    public int walkFrames = 4;
-    public int standFrames = 4;
-    public int attackFrames = 6;
-    
-    //由load传入数据
-    private int CELL_H;
-    private int CELL_W;
-    
-    //每个实体传入自己的文件路径
-    private String walkFrameSet;
-    private String standFrameSet;
-    private String attackFrameSet;
-    
-    private PApplet app;
-    PImage walk [][];
-    PImage stand [][];
-    PImage attack [][];
-    
-    public void load(PApplet app,int CELL_W,int CELL_H,String walkFrameSet,String standFrameSet){
-       this.CELL_H = CELL_H;
-       this.CELL_W= CELL_W;
-       this.walkFrameSet = walkFrameSet;
-       this.standFrameSet = standFrameSet;
-       //获取站立图
-       walk = cutSheet(app,walkFrameSet,walkFrames);
-       //获取站立图
-       stand = cutSheet(app,standFrameSet,standFrames);
-       //获取攻击图
+
+    public PImage[][] walk;   // [direction][frame] for walking animation
+    public PImage[][] idle;   // [direction][frame] for idle animation
+    public PImage[][] attack; // [direction][frame] for attack animation
+
+    private int cellW; // Width of each sprite frame in pixels
+    private int cellH; // Height of each sprite frame in pixels
+
+    /**
+     * Load player walk and sword attack sprites
+     * Idle uses a specific frame from walk animation
+     */
+    public void loadPlayer(PApplet app, int cellW, int cellH, String walkSheet, String swordAttackSheet, int idleFrameIndex) {
+        this.cellW = cellW;
+        this.cellH = cellH;
+
+        // Load walk and attack animations from separate sheets
+        walk = cut(app, walkSheet);
+        attack = cut(app, swordAttackSheet);
+
+        // Create idle animation by picking one frame from walk cycle
+        idle = new PImage[4][1];
+        for (int d = 0; d < 4; d++) {
+            if (walk != null && walk[d] != null && walk[d].length > 0) {
+                int idx = idleFrameIndex;
+                if (idx < 0) idx = 0;
+                if (idx >= walk[d].length) idx = walk[d].length - 1;
+                idle[d][0] = walk[d][idx]; // Use specified frame as idle pose
+            } else {
+                idle[d][0] = null;
+            }
+        }
     }
-    private PImage[][] cutSheet(PApplet app,String file,int framesPerDir){
-        PImage sheet =app.loadImage(file);
-        if(sheet == null)return null;
-        
-        int cols = sheet.width / CELL_W;
-        int rows = sheet.height / CELL_H;
-        
-        int n = Math.min(framesPerDir, cols);//判断实际帧数和期盼的一样
-        PImage[][] out = new PImage[4][n];
-        //人物图每行方向
-        int rowLEFT = 0;
-        int rowRIGHT = 1;
-        int rowUP = 2;
-        int rowDOWN = 3;
-        for(int i = 0;i<n;i++){//(x,y,w,h)以x和y为左上角，切w*h大小的图片
-            out[Actor.LEFT][i]  = sheet.get(i * CELL_W, rowLEFT  * CELL_H, CELL_W, CELL_H);
-            out[Actor.RIGHT][i] = sheet.get(i * CELL_W, rowRIGHT * CELL_H, CELL_W, CELL_H);
-            out[Actor.UP][i]    = sheet.get(i * CELL_W, rowUP    * CELL_H, CELL_W, CELL_H);
-            out[Actor.DOWN][i]  = sheet.get(i * CELL_W, rowDOWN  * CELL_H, CELL_W, CELL_H);
+
+    /**
+     * Load enemy walk and attack sprites
+     */
+    public void loadEnemy(PApplet app, int cellW, int cellH, String walkSheet, String attackSheet) {
+        this.cellW = cellW;
+        this.cellH = cellH;
+        walk = cut(app, walkSheet);
+        idle = null; // Enemies don't have idle animation
+        if (attackSheet == null) {
+            attack = null;
+        } else {
+            attack = cut(app, attackSheet);
+        }
+    }
+
+    // Overload: load enemy with only attack animation (for stationary enemies)
+    public void loadEnemy(PApplet app, int cellW, int cellH, String attackSheet) {
+        this.cellW = cellW;
+        this.cellH = cellH;
+        walk = null; // No walking animation
+        idle = null; // No idle animation
+        if (attackSheet == null) {
+            attack = null;
+        } else {
+            attack = cut(app, attackSheet);
+        }
+    }
+
+    /**
+     * Cut sprite sheet into 4-direction animation arrays
+     * Assumes standard layout: 4 rows (DOWN, UP, RIGHT, LEFT from top to bottom)
+     */
+    private PImage[][] cut(PApplet app, String file) {
+        PImage sheet = app.loadImage(file);
+        if (sheet == null) return null;
+
+        // Calculate how many frames per row
+        int cols = sheet.width / cellW;
+        int rows = sheet.height / cellH;
+        if (cols <= 0 || rows <= 0) return null;
+
+        // Map directions to sprite sheet rows (Processing loads top-to-bottom)
+        // DOWN=3, UP=2, RIGHT=1, LEFT=0 matches your sprite sheet layout
+        int[] dirToRow = { 3, 2, 1, 0 };
+
+        PImage[][] out = new PImage[4][cols];
+
+        for (int dir = 0; dir < 4; dir++) {
+            int ry = dirToRow[dir];
+            if (ry < 0) ry = 0;
+            if (ry > rows - 1) ry = rows - 1;
+
+            for (int i = 0; i < cols; i++) {
+                out[dir][i] = sheet.get(i * cellW, ry * cellH, cellW, cellH);
+            }
         }
         return out;
     }
-        
-    
 }
